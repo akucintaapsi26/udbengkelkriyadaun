@@ -208,12 +208,14 @@ h6 {
 }
 
 .header .logo img {
-  max-height: 36px;
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
   margin-right: 8px;
 }
 
 .header .logo h1 {
-  font-size: 30px;
+  font-size: 22px;
   margin: 0;
   font-weight: 700;
   color: var(--heading-color);
@@ -1845,9 +1847,9 @@ section,
 
 .team {
   background-image:
-    linear-gradient(rgba(245, 241, 230, 0.91), rgba(245, 241, 230, 0.94)),
-    url("../img/products/kriya-hati-daun.png");
-  background-position: center 42%;
+    linear-gradient(rgba(245, 241, 230, 0.84), rgba(245, 241, 230, 0.84)),
+    url("../img/hero-bg.jpg");
+  background-position: center center;
   background-size: cover;
 }
 
