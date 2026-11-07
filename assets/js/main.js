@@ -1,250 +1,175 @@
 /**
-* Template Name: BizLand
-* Template URL: https://bootstrapmade.com/bizland-bootstrap-business-template/
-* Updated: Dec 05 2024 with Bootstrap v5.3.3
-* Author: BootstrapMade.com
-* License: https://bootstrapmade.com/license/
-*/
-
+ * Template Name: BizLand
+ * Local behavior and enhancements for UD Bengkel Kriya Daun 9996.
+ */
 (function() {
   "use strict";
 
-  /**
-   * Apply .scrolled class to the body as the page is scrolled down
-   */
-  function toggleScrolled() {
-    const selectBody = document.querySelector('body');
-    const selectHeader = document.querySelector('#header');
-    if (!selectHeader.classList.contains('scroll-up-sticky') && !selectHeader.classList.contains('sticky-top') && !selectHeader.classList.contains('fixed-top')) return;
-    window.scrollY > 100 ? selectBody.classList.add('scrolled') : selectBody.classList.remove('scrolled');
-  }
+  // Load site-specific styling without modifying the upstream template stylesheet.
+  const siteStyles = document.createElement('link');
+  siteStyles.rel = 'stylesheet';
+  siteStyles.href = 'assets/css/site-overrides.css';
+  document.head.appendChild(siteStyles);
 
-  document.addEventListener('scroll', toggleScrolled);
+  function toggleScrolled() {
+    const body = document.body;
+    const header = document.querySelector('#header');
+    if (!body || !header) return;
+    if (!header.classList.contains('scroll-up-sticky') && !header.classList.contains('sticky-top') && !header.classList.contains('fixed-top')) return;
+    body.classList.toggle('scrolled', window.scrollY > 100);
+  }
+  document.addEventListener('scroll', toggleScrolled, { passive: true });
   window.addEventListener('load', toggleScrolled);
 
-  /**
-   * Mobile nav toggle
-   */
   const mobileNavToggleBtn = document.querySelector('.mobile-nav-toggle');
-
-  function mobileNavToogle() {
-    document.querySelector('body').classList.toggle('mobile-nav-active');
+  function mobileNavToggle() {
+    if (!mobileNavToggleBtn) return;
+    document.body.classList.toggle('mobile-nav-active');
     mobileNavToggleBtn.classList.toggle('bi-list');
     mobileNavToggleBtn.classList.toggle('bi-x');
+    mobileNavToggleBtn.setAttribute('aria-expanded', document.body.classList.contains('mobile-nav-active'));
   }
-  if (mobileNavToggleBtn) {
-    mobileNavToggleBtn.addEventListener('click', mobileNavToogle);
-  }
+  if (mobileNavToggleBtn) mobileNavToggleBtn.addEventListener('click', mobileNavToggle);
 
-  /**
-   * Hide mobile nav on same-page/hash links
-   */
-  document.querySelectorAll('#navmenu a').forEach(navmenu => {
-    navmenu.addEventListener('click', () => {
-      if (document.querySelector('.mobile-nav-active')) {
-        mobileNavToogle();
-      }
-    });
-
-  });
-
-  /**
-   * Toggle mobile nav dropdowns
-   */
-  document.querySelectorAll('.navmenu .toggle-dropdown').forEach(navmenu => {
-    navmenu.addEventListener('click', function(e) {
-      e.preventDefault();
-      this.parentNode.classList.toggle('active');
-      this.parentNode.nextElementSibling.classList.toggle('dropdown-active');
-      e.stopImmediatePropagation();
+  document.querySelectorAll('#navmenu a').forEach(link => {
+    link.addEventListener('click', () => {
+      if (document.body.classList.contains('mobile-nav-active') && !link.querySelector('.toggle-dropdown')) mobileNavToggle();
     });
   });
 
-  /**
-   * Preloader
-   */
+  document.querySelectorAll('.navmenu .toggle-dropdown').forEach(toggle => {
+    toggle.addEventListener('click', function(event) {
+      event.preventDefault();
+      const parent = this.parentNode;
+      const submenu = parent && parent.nextElementSibling;
+      if (parent) parent.classList.toggle('active');
+      if (submenu) submenu.classList.toggle('dropdown-active');
+      event.stopImmediatePropagation();
+    });
+  });
+
   const preloader = document.querySelector('#preloader');
-  if (preloader) {
-    window.addEventListener('load', () => {
-      preloader.remove();
-    });
-  }
+  if (preloader) window.addEventListener('load', () => preloader.remove());
 
-  /**
-   * Scroll top button
-   */
-  let scrollTop = document.querySelector('.scroll-top');
-
+  const scrollTop = document.querySelector('.scroll-top');
   function toggleScrollTop() {
-    if (scrollTop) {
-      window.scrollY > 100 ? scrollTop.classList.add('active') : scrollTop.classList.remove('active');
-    }
+    if (scrollTop) scrollTop.classList.toggle('active', window.scrollY > 100);
   }
-  scrollTop.addEventListener('click', (e) => {
-    e.preventDefault();
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
+  if (scrollTop) {
+    scrollTop.addEventListener('click', event => {
+      event.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
-  });
-
+  }
   window.addEventListener('load', toggleScrollTop);
-  document.addEventListener('scroll', toggleScrollTop);
+  document.addEventListener('scroll', toggleScrollTop, { passive: true });
 
-  /**
-   * Animation on scroll function and init
-   */
   function aosInit() {
-    AOS.init({
-      duration: 600,
-      easing: 'ease-in-out',
-      once: true,
-      mirror: false
-    });
+    if (window.AOS) window.AOS.init({ duration: 600, easing: 'ease-in-out', once: true, mirror: false });
   }
   window.addEventListener('load', aosInit);
 
-  /**
-   * Initiate glightbox
-   */
+  // Direct product questions to WhatsApp with a ready-to-send product-specific message.
+  const whatsappNumber = '628123240214';
+  document.querySelectorAll('#pricing .pricing-item').forEach(card => {
+    const button = card.querySelector('.btn-buy');
+    const productName = card.querySelector('h3')?.textContent.trim() || 'produk kriya';
+    if (!button) return;
+    const message = `Halo UD Bengkel Kriya Daun 9996, saya ingin menanyakan ${productName}. Mohon info ketersediaan dan harganya. Terima kasih.`;
+    button.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    button.target = '_blank';
+    button.rel = 'noopener noreferrer';
+  });
+
   document.querySelectorAll('#portfolio .preview-link').forEach(link => {
-    const product = link.closest('.portfolio-item');
-    const description = product?.querySelector('.portfolio-info p');
-    if (description) {
-      link.setAttribute('data-description', description.textContent.trim());
-    }
-    link.setAttribute('aria-label', `Lihat detail ${link.title}`);
+    const description = link.closest('.portfolio-item')?.querySelector('.portfolio-info p');
+    if (description) link.setAttribute('data-description', description.textContent.trim());
+    if (link.title) link.setAttribute('aria-label', `Lihat detail ${link.title}`);
   });
+  if (window.GLightbox) {
+    window.GLightbox({ selector: '.glightbox', descPosition: 'bottom', moreText: 'Baca selengkapnya', moreLength: 160, loop: true });
+  }
 
-  const glightbox = GLightbox({
-    selector: '.glightbox',
-    descPosition: 'bottom',
-    moreText: 'Baca selengkapnya',
-    moreLength: 160,
-    loop: true
-  });
-
-  /**
-   * Animate the skills items on reveal
-   */
-  let skillsAnimation = document.querySelectorAll('.skills-animation');
-  skillsAnimation.forEach((item) => {
-    new Waypoint({
+  document.querySelectorAll('.skills-animation').forEach(item => {
+    if (!window.Waypoint) return;
+    new window.Waypoint({
       element: item,
       offset: '80%',
-      handler: function(direction) {
-        let progress = item.querySelectorAll('.progress .progress-bar');
-        progress.forEach(el => {
-          el.style.width = el.getAttribute('aria-valuenow') + '%';
+      handler: function() {
+        item.querySelectorAll('.progress .progress-bar').forEach(bar => {
+          bar.style.width = `${bar.getAttribute('aria-valuenow') || 0}%`;
         });
       }
     });
   });
+  if (window.PureCounter) new window.PureCounter();
 
-  /**
-   * Initiate Pure Counter
-   */
-  new PureCounter();
-
-  /**
-   * Init swiper sliders
-   */
   function initSwiper() {
-    document.querySelectorAll(".init-swiper").forEach(function(swiperElement) {
-      let config = JSON.parse(
-        swiperElement.querySelector(".swiper-config").innerHTML.trim()
-      );
-
-      if (swiperElement.classList.contains("swiper-tab")) {
-        initSwiperWithCustomPagination(swiperElement, config);
-      } else {
-        new Swiper(swiperElement, config);
+    if (!window.Swiper) return;
+    document.querySelectorAll('.init-swiper').forEach(element => {
+      const configElement = element.querySelector('.swiper-config');
+      if (!configElement) return;
+      try {
+        const config = JSON.parse(configElement.textContent.trim());
+        if (element.classList.contains('swiper-tab') && window.initSwiperWithCustomPagination) {
+          window.initSwiperWithCustomPagination(element, config);
+        } else {
+          new window.Swiper(element, config);
+        }
+      } catch (error) {
+        console.error('Konfigurasi slider tidak valid:', error);
       }
     });
   }
+  window.addEventListener('load', initSwiper);
 
-  window.addEventListener("load", initSwiper);
-
-  /**
-   * Init isotope layout and filters
-   */
-  document.querySelectorAll('.isotope-layout').forEach(function(isotopeItem) {
-    let layout = isotopeItem.getAttribute('data-layout') ?? 'masonry';
-    let filter = isotopeItem.getAttribute('data-default-filter') ?? '*';
-    let sort = isotopeItem.getAttribute('data-sort') ?? 'original-order';
-
-    let initIsotope;
-    imagesLoaded(isotopeItem.querySelector('.isotope-container'), function() {
-      initIsotope = new Isotope(isotopeItem.querySelector('.isotope-container'), {
-        itemSelector: '.isotope-item',
-        layoutMode: layout,
-        filter: filter,
-        sortBy: sort
+  document.querySelectorAll('.isotope-layout').forEach(element => {
+    const container = element.querySelector('.isotope-container');
+    if (!container || !window.imagesLoaded || !window.Isotope) return;
+    const layout = element.getAttribute('data-layout') || 'masonry';
+    const filter = element.getAttribute('data-default-filter') || '*';
+    const sort = element.getAttribute('data-sort') || 'original-order';
+    let isotope;
+    window.imagesLoaded(container, () => {
+      isotope = new window.Isotope(container, { itemSelector: '.isotope-item', layoutMode: layout, filter, sortBy: sort });
+    });
+    element.querySelectorAll('.isotope-filters li').forEach(item => {
+      item.addEventListener('click', function() {
+        element.querySelector('.isotope-filters .filter-active')?.classList.remove('filter-active');
+        this.classList.add('filter-active');
+        if (isotope) isotope.arrange({ filter: this.getAttribute('data-filter') });
+        aosInit();
       });
     });
-
-    isotopeItem.querySelectorAll('.isotope-filters li').forEach(function(filters) {
-      filters.addEventListener('click', function() {
-        isotopeItem.querySelector('.isotope-filters .filter-active').classList.remove('filter-active');
-        this.classList.add('filter-active');
-        initIsotope.arrange({
-          filter: this.getAttribute('data-filter')
-        });
-        if (typeof aosInit === 'function') {
-          aosInit();
-        }
-      }, false);
-    });
-
   });
 
-  /**
-   * Frequently Asked Questions Toggle
-   */
-  document.querySelectorAll('.faq-item h3, .faq-item .faq-toggle').forEach((faqItem) => {
-    faqItem.addEventListener('click', () => {
-      faqItem.parentNode.classList.toggle('faq-active');
-    });
+  document.querySelectorAll('.faq-item h3, .faq-item .faq-toggle').forEach(item => {
+    item.addEventListener('click', () => item.parentNode?.classList.toggle('faq-active'));
   });
 
-  /**
-   * Correct scrolling position upon page load for URLs containing hash links.
-   */
-  window.addEventListener('load', function(e) {
-    if (window.location.hash) {
-      if (document.querySelector(window.location.hash)) {
-        setTimeout(() => {
-          let section = document.querySelector(window.location.hash);
-          let scrollMarginTop = getComputedStyle(section).scrollMarginTop;
-          window.scrollTo({
-            top: section.offsetTop - parseInt(scrollMarginTop),
-            behavior: 'smooth'
-          });
-        }, 100);
-      }
-    }
+  window.addEventListener('load', () => {
+    if (!window.location.hash) return;
+    let section;
+    try { section = document.querySelector(window.location.hash); } catch (_) { return; }
+    if (!section) return;
+    window.setTimeout(() => {
+      const margin = parseInt(getComputedStyle(section).scrollMarginTop, 10) || 0;
+      window.scrollTo({ top: section.offsetTop - margin, behavior: 'smooth' });
+    }, 100);
   });
 
-  /**
-   * Navmenu Scrollspy
-   */
-  let navmenulinks = document.querySelectorAll('.navmenu a');
-
+  const navLinks = document.querySelectorAll('.navmenu a');
   function navmenuScrollspy() {
-    navmenulinks.forEach(navmenulink => {
-      if (!navmenulink.hash) return;
-      let section = document.querySelector(navmenulink.hash);
+    const position = window.scrollY + 200;
+    navLinks.forEach(link => {
+      if (!link.hash) return;
+      let section;
+      try { section = document.querySelector(link.hash); } catch (_) { return; }
       if (!section) return;
-      let position = window.scrollY + 200;
-      if (position >= section.offsetTop && position <= (section.offsetTop + section.offsetHeight)) {
-        document.querySelectorAll('.navmenu a.active').forEach(link => link.classList.remove('active'));
-        navmenulink.classList.add('active');
-      } else {
-        navmenulink.classList.remove('active');
-      }
-    })
+      const active = position >= section.offsetTop && position <= section.offsetTop + section.offsetHeight;
+      link.classList.toggle('active', active);
+    });
   }
   window.addEventListener('load', navmenuScrollspy);
-  document.addEventListener('scroll', navmenuScrollspy);
-
+  document.addEventListener('scroll', navmenuScrollspy, { passive: true });
 })();

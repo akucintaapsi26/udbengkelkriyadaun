@@ -1,0 +1,131 @@
+/* Brand-specific refinements for the home page. */
+:root {
+  --background-color: #f5f1e6;
+  --default-color: #2d312d;
+  --heading-color: #1f2f22;
+  --accent-color: #3e5f44;
+  --surface-color: #ddd6b9;
+  --contrast-color: #fff;
+}
+
+/* Tighten oversized template spacing without making sections feel crowded. */
+.index-page main > section.section {
+  padding-top: 44px;
+  padding-bottom: 44px;
+}
+.index-page .section-title {
+  padding-bottom: 32px;
+}
+.index-page .section-title p {
+  font-size: clamp(24px, 3vw, 32px);
+}
+
+/* Keep the existing company logo crisp and give it enough room in the header. */
+.index-page .header .logo img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+.index-page .header .branding {
+  padding: 6px 0;
+}
+
+/* Compact, consistent pricing cards; the buttons stay aligned at the bottom. */
+.index-page #pricing .pricing-item {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid rgba(31, 47, 34, .08);
+  border-radius: 16px;
+  background: #e2dcc4;
+  box-shadow: 0 8px 24px rgba(31, 47, 34, .08);
+}
+.index-page #pricing .pricing-item > h3 {
+  margin: 0;
+  padding: 16px 18px;
+  background: rgba(62, 95, 68, .10);
+  font-size: 17px;
+  text-align: center;
+}
+.index-page #pricing .pricing-item .pricing-icon {
+  margin: 18px auto 8px;
+}
+.index-page #pricing .pricing-item h4 {
+  margin: 8px 16px 16px;
+  text-align: center;
+}
+.index-page #pricing .pricing-item ul {
+  flex: 1;
+  margin: 8px 0 18px;
+  padding: 0 22px;
+}
+.index-page #pricing .pricing-item .btn-wrap {
+  margin-top: auto;
+  padding: 16px 18px;
+  background: rgba(31, 47, 34, .04);
+}
+.index-page #pricing .pricing-item .btn-buy {
+  display: block;
+  width: 100%;
+  border-radius: 999px;
+}
+
+/* Distinct deep-green footer, matching the site's botanical palette. */
+.index-page #footer.footer {
+  padding-top: 12px;
+  padding-bottom: 20px;
+  color: #f7f5eb;
+  background: #263d2d;
+}
+.index-page #footer.footer h3,
+.index-page #footer.footer h4,
+.index-page #footer.footer strong,
+.index-page #footer.footer .footer-about a {
+  color: #fffdf5;
+}
+.index-page #footer.footer p,
+.index-page #footer.footer li,
+.index-page #footer.footer .credits,
+.index-page #footer.footer .copyright {
+  color: rgba(255, 253, 245, .82);
+}
+.index-page #footer.footer a,
+.index-page #footer.footer .footer-links ul i {
+  color: #d7cda7;
+}
+.index-page #footer.footer a:hover {
+  color: #fff;
+}
+.index-page #footer.footer .social-links a {
+  color: #fff;
+  border-color: rgba(255, 255, 255, .35);
+}
+.index-page #footer.footer .social-links a:hover {
+  color: #263d2d;
+  border-color: #d7cda7;
+  background: #d7cda7;
+}
+.index-page #footer.footer .copyright {
+  border-color: rgba(255, 255, 255, .18);
+}
+.index-page #footer.footer .footer-top {
+  padding-top: 28px;
+}
+.index-page #footer.footer .footer-links {
+  margin-bottom: 18px;
+}
+
+@media (max-width: 575px) {
+  .index-page main > section.section {
+    padding-top: 34px;
+    padding-bottom: 34px;
+  }
+  .index-page .header .logo h1 {
+    font-size: 16px;
+  }
+  .index-page .header .logo img {
+    width: 42px;
+    height: 42px;
+  }
+}

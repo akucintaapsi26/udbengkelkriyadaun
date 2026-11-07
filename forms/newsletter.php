@@ -1,39 +1,32 @@
 <?php
-  /**
-  * Requires the "PHP Email Form" library
-  * The "PHP Email Form" library is available only in the pro version of the template
-  * The library should be uploaded to: vendor/php-email-form/php-email-form.php
-  * For more info and help: https://bootstrapmade.com/php-email-form/
-  */
+// Newsletter handler. Requires PHP with the mail() transport configured by the host.
+header('Content-Type: text/plain; charset=UTF-8');
 
-  // Replace contact@example.com with your real receiving email address
-  $receiving_email_address = 'contact@example.com';
+if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+  http_response_code(405);
+  exit('Metode pengiriman tidak valid.');
+}
 
-  if( file_exists($php_email_form = '../assets/vendor/php-email-form/php-email-form.php' )) {
-    include( $php_email_form );
-  } else {
-    die( 'Unable to load the "PHP Email Form" Library!');
-  }
+$email = trim((string)($_POST['email'] ?? ''));
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+  http_response_code(400);
+  exit('Alamat email tidak valid.');
+}
 
-  $contact = new PHP_Email_Form;
-  $contact->ajax = true;
-  
-  $contact->to = $receiving_email_address;
-  $contact->from_name = $_POST['email'];
-  $contact->from_email = $_POST['email'];
-  $contact->subject ="New Subscription: " . $_POST['email'];
+$to = 'bengkelkriyadaun@gmail.com';
+$subject = '=?UTF-8?B?' . base64_encode('Pelanggan baru berlangganan newsletter') . '?=';
+$body = "Pendaftaran newsletter baru dari website UD Bengkel Kriya Daun 9996.\nEmail: {$email}\n";
+$headers = [
+  'MIME-Version: 1.0',
+  'Content-Type: text/plain; charset=UTF-8',
+  'From: UD Bengkel Kriya Daun 9996 <bengkelkriyadaun@gmail.com>',
+  'Reply-To: ' . $email,
+  'X-Mailer: PHP/' . phpversion(),
+];
 
-  // Uncomment below code if you want to use SMTP to send emails. You need to enter your correct SMTP credentials
-  /*
-  $contact->smtp = array(
-    'host' => 'example.com',
-    'username' => 'example',
-    'password' => 'pass',
-    'port' => '587'
-  );
-  */
+if (!@mail($to, $subject, $body, implode("\r\n", $headers))) {
+  http_response_code(500);
+  exit('Email belum dapat dikirim oleh server. Pastikan layanan email/PHP mail pada hosting sudah diaktifkan.');
+}
 
-  $contact->add_message( $_POST['email'], 'Email');
-
-  echo $contact->send();
-?>
+echo 'OK';
